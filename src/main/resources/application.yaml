@@ -1,6 +1,9 @@
 spring:
   application.name: library
-  jpa.open-in-view: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/library_db
+    username: postgres
+    password: password
 
 jwt:
   secret-key: nJf+3KztH8FQ1L0vX7f0ggamKKY8goJyh8u5Tlb6cFc=

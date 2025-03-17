@@ -13,8 +13,10 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.*
 import org.junit.jupiter.params.provider.MethodSource
+import org.springframework.data.domain.Pageable
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import java.time.LocalDate
+import kotlin.math.exp
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
@@ -34,12 +36,12 @@ class BookIntTest : AbstractIntegrationTest() {
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isCreated)
 
-        val savedBooks = bookRepository.findAll()
+        val savedBooks = bookRepository.findAll(Pageable.ofSize(10))
         assertThat(savedBooks).hasSize(1)
         assertThat(savedBooks.first().title).isEqualTo("title")
         assertThat(savedBooks.first().author).isEqualTo("author")
         assertThat(savedBooks.first().isbn).isEqualTo("isbn")
-        assertThat(savedBooks.first().publishedDate).isEqualTo(LocalDate.of(2020, 6, 1))
+        assertThat(savedBooks.first().publishedAt).isEqualTo(LocalDate.of(2020, 6, 1))
     }
 
     @Test
@@ -68,7 +70,7 @@ class BookIntTest : AbstractIntegrationTest() {
 
         // when & then
         mockMvc.perform(
-            get("/api/books/${book.id}")
+            get("/api/books/${expected.id}")
         )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk)
@@ -113,7 +115,7 @@ class BookIntTest : AbstractIntegrationTest() {
         // given
         val randomBook = BookEntity(null, "random", "random", "random", LocalDate.of(2020, 1, 1))
         bookRepository.save(randomBook)
-        bookRepository.save(validBook)
+        val expected = bookRepository.save(validBook)
         val keyword = "keyword"
 
         // when & then
@@ -122,7 +124,7 @@ class BookIntTest : AbstractIntegrationTest() {
         )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(listOf(validBook))))
+            .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(listOf(expected))))
     }
 
     @Test

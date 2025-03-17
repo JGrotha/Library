@@ -15,7 +15,7 @@ class UserService(
 
     override fun loadUserByUsername(username: String): UserDetails {
         val user = userRepository.findByUsername(username)
-            ?: throw UserNotFoundException("No user found with username: $username")
+            .orElseThrow { UserNotFoundException("No user found with username: $username") }
         return User.builder()
             .username(user.username)
             .password(user.password)
@@ -38,7 +38,7 @@ class UserService(
     }
 
     private fun checkIfUserAlreadyExists(request: AuthenticationRequest) {
-        if (userRepository.findByUsername(request.username) != null) {
+        if (userRepository.findByUsername(request.username).isPresent) {
             throw UserAlreadyExistsException("User already exists with this username: ${request.username}")
         }
     }

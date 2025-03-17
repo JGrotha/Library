@@ -24,8 +24,8 @@ class BookService(
             throw BookNotFoundException("No book found with this id: $bookId")
         }
         val bookEntity = BookEntity.fromRequest(request)
-        bookEntity.id = bookId
-        return bookRepository.save(bookEntity)
+        val updatedBookEntity = bookEntity.copy(id = bookId)
+        return bookRepository.updateBook(updatedBookEntity)
     }
 
     fun searchBooks(query: String): List<BookEntity> {
