@@ -4,13 +4,10 @@ import com.example.library.auth.AuthenticationRequest
 import com.example.library.integration.AbstractIntegrationTest
 import com.example.library.user.UserEntity
 import org.junit.jupiter.api.Test
-<<<<<<< Updated upstream
-=======
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.*
 import org.junit.jupiter.params.provider.MethodSource
->>>>>>> Stashed changes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -71,8 +68,6 @@ class AuthenticationIntegrationTest : AbstractIntegrationTest() {
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk)
     }
-<<<<<<< Updated upstream
-=======
 
     @ParameterizedTest
     @MethodSource("invalidAuthenticationRequests")
@@ -97,10 +92,10 @@ class AuthenticationIntegrationTest : AbstractIntegrationTest() {
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
     }
 
-    private companion object {
+    companion object {
 
         @JvmStatic
-        private fun invalidAuthenticationRequests(): List<Arguments> {
+        fun invalidAuthenticationRequests(): List<Arguments> {
             return listOf(
                 arguments(AuthenticationRequest("", "password")),
                 arguments(AuthenticationRequest("   ", "password")),
@@ -110,5 +105,4 @@ class AuthenticationIntegrationTest : AbstractIntegrationTest() {
         }
     }
 
->>>>>>> Stashed changes
 }

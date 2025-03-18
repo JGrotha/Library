@@ -12,12 +12,15 @@ import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.context.ApplicationContextInitializer
 import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.jdbc.core.simple.JdbcClient
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.lifecycle.Startables
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ContextConfiguration(initializers = [AbstractIntegrationTest.Companion.Initializer::class])
 abstract class AbstractIntegrationTest {
 
     @Autowired
@@ -46,7 +49,7 @@ abstract class AbstractIntegrationTest {
         dbCleaner.removeAllUsers()
     }
 
-    private companion object {
+    companion object {
 
         @Container
         private val postgres = PostgreSQLContainer<Nothing>("postgres:17")
@@ -57,6 +60,10 @@ abstract class AbstractIntegrationTest {
             }
 
         internal class Initializer : ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+            init {
+                Startables.deepStart(postgres).join()
+            }
 
             override fun initialize(applicationContext: ConfigurableApplicationContext) {
                 TestPropertyValues.of(
