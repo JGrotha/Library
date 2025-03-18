@@ -3,7 +3,6 @@ package com.example.library.book
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
-import org.springframework.data.repository.query.Param
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -101,7 +100,7 @@ class BookRepository(private val jdbcClient: JdbcClient) {
         if (rowsAffected > 1) throw RuntimeException("Removed more than 1 row. Rollback")
     }
 
-    fun searchBooks(@Param("query") query: String, pageable: Pageable): Page<BookEntity> {
+    fun searchBooks(query: String, pageable: Pageable): Page<BookEntity> {
         val sql = """
             SELECT * FROM books
             WHERE title LIKE CONCAT('%', :query, '%')
