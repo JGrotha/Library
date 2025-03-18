@@ -58,4 +58,12 @@ class BookController(
     ): List<BookEntity> {
         return bookService.searchBooks(query, pageable)
     }
+
+    @GetMapping("/full-text-search")
+    fun getBooksContainingKeyword(
+        @RequestParam("keyword") keyword: String,
+        @PageableDefault(page = 0, size = 10) pageable: Pageable
+    ) : Page<BookEntity> {
+        return bookService.getBooksContainingKeyword(keyword, pageable)
+    }
 }
